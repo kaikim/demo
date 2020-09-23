@@ -12,6 +12,8 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 
 @Component
@@ -27,8 +29,13 @@ public class OpenApiConfig {
 				.license(new License().name("Apache License Version 2.0").url("http://www.apache.org/licenses/LICENSE-2.0"));
 		
 		List<Server> servers = Arrays.asList(new Server().url(url).description("demo (" + active +")"));
+		
 		return new OpenAPI()
-				.components(new Components())
+				.components(new Components().addSecuritySchemes("BasicAuth",
+						new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("basic")))
+				.addSecurityItem(new SecurityRequirement().addList("BasicAuth"))
+				.security(Arrays.asList(
+                        new SecurityRequirement().addList("BasicAuth")))
 				.info(info)
 				.servers(servers);
 	}
