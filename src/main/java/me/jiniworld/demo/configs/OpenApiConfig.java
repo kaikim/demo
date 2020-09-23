@@ -30,12 +30,22 @@ public class OpenApiConfig {
 		
 		List<Server> servers = Arrays.asList(new Server().url(url).description("demo (" + active +")"));
 		
+//		return new OpenAPI()
+//				.components(new Components().addSecuritySchemes("BasicAuth",
+//						new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("basic")))
+//				.addSecurityItem(new SecurityRequirement().addList("BasicAuth"))
+//				.security(Arrays.asList(
+//                        new SecurityRequirement().addList("BasicAuth")))
+//				.info(info)
+//				.servers(servers);
+		
 		return new OpenAPI()
-				.components(new Components().addSecuritySchemes("BasicAuth",
-						new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("basic")))
-				.addSecurityItem(new SecurityRequirement().addList("BasicAuth"))
+				.components(new Components().addSecuritySchemes("bearerAuth",
+						new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")
+						.in(SecurityScheme.In.HEADER).name("Authorization")))
+				.addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
 				.security(Arrays.asList(
-                        new SecurityRequirement().addList("BasicAuth")))
+                        new SecurityRequirement().addList("bearerAuth", Arrays.asList("read", "write"))))
 				.info(info)
 				.servers(servers);
 	}
