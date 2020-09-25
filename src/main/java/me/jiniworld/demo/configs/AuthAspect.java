@@ -1,9 +1,9 @@
 package me.jiniworld.demo.configs;
 
 import java.io.UnsupportedEncodingException;
-import java.security.Key;
 import java.util.Base64;
 
+import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
@@ -17,17 +17,16 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.WeakKeyException;
 
 @Aspect
 @Component
 public class AuthAspect {
-	
-	private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-	
+		
 	@Before("execution(public * me.jiniworld.demo.controllers.api.v1..*Controller.*(..)) ")
-	public void insertAdminLog(JoinPoint joinPoint) {
+	public void insertAdminLog(JoinPoint joinPoint) throws WeakKeyException, UnsupportedEncodingException {
+		SecretKey key = Keys.hmacShaKeyFor("test123test123test123test1232323gfgfg434343f".getBytes("UTF-8"));
 		String target = joinPoint.getSignature().toString();
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();		
 		
